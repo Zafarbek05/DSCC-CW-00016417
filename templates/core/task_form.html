@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>Add New Task</h2>
+    <form method="post">
+        {% csrf_token %}
+        <p>Title: <input type="text" name="title" required></p>
+        <p>Category: 
+            <select name="category">
+                {% for cat in categories %}
+                    <option value="{{ cat.id }}">{{ cat.name }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <button type="submit">Save Task</button>
+    </form>
+{% endblock %}
