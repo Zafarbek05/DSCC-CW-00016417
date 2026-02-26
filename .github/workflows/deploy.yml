@@ -79,11 +79,11 @@ jobs:
           echo "DB_PORT=5432" >> .env
           
           # 3. Pull latest images and restart with zero downtime
-          sudo docker-compose pull
-          sudo docker-compose up -d --remove-orphans
+          sudo docker compose pull
+          sudo docker compose up -d --remove-orphans
           
           # 4. Run database migrations automatically
-          sudo docker-compose exec -T web python manage.py migrate
+          sudo docker compose exec -T web python manage.py migrate
           
           # 5. Collect static files
-          sudo docker-compose exec -T web python manage.py collectstatic --noinput
+          sudo docker compose exec -T web python manage.py collectstatic --noinput
