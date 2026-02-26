@@ -118,6 +118,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+# In production, collect static files here
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 # Redirect users to the task list after login
 LOGIN_REDIRECT_URL = 'task_list'
 
