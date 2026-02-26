@@ -1,0 +1,89 @@
+name: Django CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest pytest-django
+        pip install -r requirements.txt
+        
+    - name: Run Code Quality Checks (flake8)
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        
+    - name: Run Tests
+      env:
+        SECRET_KEY: 'dummy-key-for-tests'
+        DEBUG: 'True'
+      run: |
+        pytest
+
+  build-and-push:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/dscc-project:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/dscc-project:${{ github.sha }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to Azure Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          # 1. Update the docker-compose file to use the pulled image
+          cd /home/azureuser/dscc_project || git clone https://github.com/${{ github.repository }}.git /home/azureuser/dscc_project
+          cd /home/azureuser/dscc_project
+          git pull origin main
+          
+          # 2. Update .env file for production (if not exists)
+          echo "SECRET_KEY=production-secret-key" > .env
+          echo "DEBUG=False" >> .env
+          echo "DB_NAME=postgres" >> .env
+          echo "DB_USER=postgres" >> .env
+          echo "DB_PASSWORD=securepassword" >> .env
+          echo "DB_HOST=db" >> .env
+          echo "DB_PORT=5432" >> .env
+          
+          # 3. Pull latest images and restart with zero downtime
+          sudo docker-compose pull
+          sudo docker-compose up -d --remove-orphans
+          
+          # 4. Run database migrations automatically
+          sudo docker-compose exec -T web python manage.py migrate
+          
+          # 5. Collect static files
+          sudo docker-compose exec -T web python manage.py collectstatic --noinput
