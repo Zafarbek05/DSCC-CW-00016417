@@ -91,4 +91,4 @@ jobs:
 
           # 6. Obtain SSL Certificate (HTTPS)
           # Note: This will only run if certbot isn't already configured
-          sudo docker compose exec -T nginx sh -c "apk add --no-cache certbot certbot-nginx && certbot --nginx -d django16417.duckdns.org --non-interactive --agree-tos -m jabborovz2005@gmail.com"
+          sudo docker compose exec -T nginx sh -c "apk add --no-cache certbot certbot-nginx && certbot --nginx -d django16417.duckdns.org --non-interactive --agree-tos -m jabborovz2005@gmail.com --reinstall"
