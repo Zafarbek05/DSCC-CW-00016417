@@ -22,9 +22,12 @@ services:
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - static_volume:/app/staticfiles
+      - cert_volume:/etc/letsencrypt
     depends_on:
       - web
 
 volumes:
   postgres_data:
   static_volume:
+  cert_volume:
+  
