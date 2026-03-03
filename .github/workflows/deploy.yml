@@ -18,7 +18,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-django
+        pip uninstall -y decouple
+        pip install python-decouple flake8 pytest pytest-django
         pip install -r requirements.txt
         
     - name: Run Code Quality Checks (flake8)
