@@ -26,8 +26,8 @@ SECRET_KEY = 'django-insecure-17_mk#(xjikl(gy!o^_is-rvn-&mcy7b+zd6ph(-q+d-iv378-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# Add your Azure IP here so Django permits requests from it
+ALLOWED_HOSTS = ['20.219.27.149', 'localhost', '127.0.0.1']
 
 # Application definition
 
