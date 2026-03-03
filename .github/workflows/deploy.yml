@@ -65,31 +65,17 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          # 1. Update the docker-compose file to use the pulled image
-          cd /home/azureuser/dscc_project || git clone https://github.com/${{ github.repository }}.git /home/azureuser/dscc_project
-          cd /home/azureuser/dscc_project
-          git pull origin main
-          
-          # 2. Update .env file for production (if not exists)
-          echo "SECRET_KEY=production-secret-key" > .env
-          echo "DEBUG=False" >> .env
-          echo "DB_NAME=postgres" >> .env
-          echo "DB_USER=postgres" >> .env
-          echo "DB_PASSWORD=securepassword" >> .env
-          echo "DB_HOST=db" >> .env
-          echo "DB_PORT=5432" >> .env
-          
-          # 3. Pull latest images and restart with zero downtime
+          # 1. Pull and Start services
           sudo docker compose pull
-          sudo docker compose up -d --remove-orphans
+          sudo docker compose up -d
           
-          # 4. Run database migrations automatically
+          # 2. If Nginx is failing because of missing certs, run certbot first
+          sudo docker compose run --rm --entrypoint "/bin/sh -c 'apk add --no-cache certbot certbot-nginx && certbot certonly --standalone -d django16417.duckdns.org --non-interactive --agree-tos -m zafarbek@example.com'" nginx
+          
+          # 3. Now start everything properly
+          sudo docker compose up -d
+          
+          # 4. Run migrations and static (This will now work once decouple is fixed)
           sudo docker compose exec -T web python manage.py migrate
-          
-          # 5. Fix volume permissions and collect static files
           sudo docker compose exec -T -u root web chown -R myuser:myuser /app/staticfiles
           sudo docker compose exec -T web python manage.py collectstatic --noinput
-
-          # 6. Ensure cert exists and reload nginx
-          sudo docker compose exec -T nginx sh -c "apk add --no-cache certbot certbot-nginx && certbot certonly --nginx -d django16417.duckdns.org --non-interactive --agree-tos -m jabborovz2005@gmail.com || true"
-          sudo docker compose exec -T nginx nginx -s reload
