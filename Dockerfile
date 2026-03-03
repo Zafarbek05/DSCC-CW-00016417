@@ -23,6 +23,11 @@ USER myuser
 # Gunicorn needs to be in the PATH for the CMD to work
 ENV PATH="/home/myuser/.local/bin:$PATH"
 
+# Install dependencies
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install --no-cache-dir python-decouple
+RUN pip install --no-cache-dir -r requirements.txt
+
 # Copy the compiled wheels from the builder stage and install them
 COPY --from=builder /app/wheels /wheels
 COPY --from=builder /app/requirements.txt .
