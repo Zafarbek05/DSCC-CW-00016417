@@ -67,7 +67,6 @@ Thumbs.db
 htmlcov/
 
 # Docker
-.dockerignore
 docker-compose.override.yml
 
 # Gunicorn and Runtime Files
