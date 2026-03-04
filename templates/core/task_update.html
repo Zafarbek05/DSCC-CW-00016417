@@ -34,14 +34,15 @@
                     </div>
                     
                     <div class="mb-4">
-                        <label for="tags" class="form-label fw-bold">Tags <span class="text-muted fw-normal">(Hold Ctrl/Cmd to select multiple)</span></label>
-                        <select name="tags" id="tags" class="form-select" multiple style="height: 100px;">
+                        <label class="form-label fw-bold d-block">Tags</label>
+                        <div class="d-flex flex-wrap gap-2">
                             {% for tag in tags %}
-                                <option value="{{ tag.id }}" {% if tag in task.tags.all %}selected{% endif %}>
-                                    {{ tag.name }}
-                                </option>
+                                <input type="checkbox" class="btn-check" name="tags" id="tag_{{ tag.id }}" value="{{ tag.id }}" autocomplete="off" {% if tag in task.tags.all %}checked{% endif %}>
+                                <label class="btn btn-outline-secondary rounded-pill btn-sm fw-bold px-3 py-2" for="tag_{{ tag.id }}">
+                                    #{{ tag.name }}
+                                </label>
                             {% endfor %}
-                        </select>
+                        </div>
                     </div>
 
                     <div class="d-grid gap-3">
