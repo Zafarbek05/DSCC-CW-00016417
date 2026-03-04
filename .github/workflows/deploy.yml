@@ -88,5 +88,8 @@ jobs:
           sudo docker compose exec -T web python manage.py migrate --noinput
           sudo docker compose exec -T web python manage.py collectstatic --noinput
           
-          # 8. Reload Nginx to apply any config changes
+          # 8. Restart Web service to apply changes
+          sudo docker compose restart web
+          
+          # 9. Reload Nginx to apply any config changes
           sudo docker compose exec -T nginx nginx -s reload || true
