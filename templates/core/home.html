@@ -1,5 +1,60 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h1>Welcome to the Task Manager Project!</h1>
-    <p>This is a containerized Django application deployed with CI/CD.</p>
+<div class="container py-4 mb-5">
+    <div class="p-5 mb-4 bg-white rounded-3 shadow-sm border text-center">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold text-primary mb-3">Cloud-Native Task Manager</h1>
+            <p class="col-md-10 mx-auto fs-5 text-muted mb-4">
+                A production-ready, containerized application engineered for reliability. Powered by a robust microservices architecture, automated CI/CD deployment, and secure reverse proxy routing.
+            </p>
+
+            <div class="d-flex justify-content-center gap-3 mb-5">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'task_list' %}" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">Go to Dashboard</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-5 fw-bold shadow-sm">Login</a>
+                    <a href="{% url 'register' %}" class="btn btn-outline-secondary btn-lg px-5 fw-bold">Create Account</a>
+                {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+                <span class="badge bg-dark fs-6 py-2 px-3 shadow-sm">Django 6.0</span>
+                <span class="badge bg-primary fs-6 py-2 px-3 shadow-sm">Docker</span>
+                <span class="badge bg-success fs-6 py-2 px-3 shadow-sm">Nginx</span>
+                <span class="badge bg-info text-dark fs-6 py-2 px-3 shadow-sm">PostgreSQL</span>
+                <span class="badge bg-secondary fs-6 py-2 px-3 shadow-sm">GitHub Actions</span>
+                <span class="badge bg-primary text-white fs-6 py-2 px-3 shadow-sm" style="background-color: #0078D4 !important;">Azure</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row align-items-md-stretch mt-4">
+        <div class="col-md-6 mb-4">
+            <div class="h-100 p-5 bg-light border rounded-3 shadow-sm transition-hover">
+                <h3 class="fw-bold text-dark mb-3">Continuous Deployment</h3>
+                <p class="text-muted fs-6 mb-0">
+                    Changes pushed to the main repository trigger an automated GitHub Actions pipeline. The source code is tested, built into an optimized Docker image, and seamlessly deployed to the production environment without downtime.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="h-100 p-5 bg-light border rounded-3 shadow-sm transition-hover">
+                <h3 class="fw-bold text-dark mb-3">Scalable Infrastructure</h3>
+                <p class="text-muted fs-6 mb-0">
+                    Data is persisted securely in an isolated PostgreSQL volume. The application is shielded by an Nginx reverse proxy that efficiently handles incoming HTTP requests and serves static assets.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transition-hover {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+</style>
 {% endblock %}
