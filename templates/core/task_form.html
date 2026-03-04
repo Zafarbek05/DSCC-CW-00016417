@@ -1,16 +1,39 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h2>Add New Task</h2>
-    <form method="post">
-        {% csrf_token %}
-        <p>Title: <input type="text" name="title" required></p>
-        <p>Category: 
-            <select name="category">
-                {% for cat in categories %}
-                    <option value="{{ cat.id }}">{{ cat.name }}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <button type="submit">Save Task</button>
-    </form>
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow border-0 rounded-lg">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary">Add New Task</h2>
+                    <p class="text-muted">What do you need to get done?</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="title" class="form-label fw-bold">Task Title</label>
+                        <input type="text" name="title" id="title" class="form-control form-control-lg" placeholder="e.g., Integrate NLP and Vector Embeddings" required>
+                    </div>
+                    
+                    <div class="mb-5">
+                        <label for="category" class="form-label fw-bold">Category</label>
+                        <select name="category" id="category" class="form-select form-select-lg" required>
+                            <option value="" disabled selected>Select a category...</option>
+                            {% for cat in categories %}
+                                <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="d-grid gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold shadow-sm">Save Task</button>
+                        <a href="{% url 'task_list' %}" class="btn btn-light btn-lg fw-bold text-muted border">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
