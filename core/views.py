@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from .models import Task, Category
+from .models import Task, Category, Tag
 
 # 1. Home Page (Public)
 def home(request):
@@ -21,7 +21,8 @@ def register(request):
 # 3. Task List (Private - Login Required)
 @login_required
 def task_list(request):
-    tasks = Task.objects.filter(owner=request.user)
+    # prefetch_related optimizes database queries for Many-to-Many fields
+    tasks = Task.objects.filter(owner=request.user).prefetch_related('tags')
     return render(request, 'core/task_list.html', {'tasks': tasks})
 
 # 4. Create Task (Private - CRUD)
@@ -29,12 +30,22 @@ def task_list(request):
 def task_create(request):
     if request.method == 'POST':
         title = request.POST.get('title')
+        description = request.POST.get('description', '')
         category_id = request.POST.get('category')
         category = Category.objects.get(id=category_id)
-        Task.objects.create(title=title, category=category, owner=request.user)
+        
+        # 1. Create the task first
+        task = Task.objects.create(title=title, description=description, category=category, owner=request.user)
+        
+        # 2. Save the Many-to-Many Tags
+        tag_ids = request.POST.getlist('tags')
+        task.tags.set(tag_ids)
+        
         return redirect('task_list')
+        
     categories = Category.objects.all()
-    return render(request, 'core/task_form.html', {'categories': categories})
+    tags = Tag.objects.all()
+    return render(request, 'core/task_form.html', {'categories': categories, 'tags': tags})
 
 # 5. Delete Task (Private - CRUD)
 @login_required
@@ -50,10 +61,17 @@ def task_update(request, pk):
     
     if request.method == 'POST':
         task.title = request.POST.get('title')
+        task.description = request.POST.get('description', '')
         category_id = request.POST.get('category')
         task.category = Category.objects.get(id=category_id)
         task.save()
+
+        # Update Many-to-Many Tags
+        tag_ids = request.POST.getlist('tags')
+        task.tags.set(tag_ids)
+        
         return redirect('task_list')
         
     categories = Category.objects.all()
-    return render(request, 'core/task_update.html', {'task': task, 'categories': categories})
+    tags = Tag.objects.all()
+    return render(request, 'core/task_update.html', {'task': task, 'categories': categories, 'tags': tags})

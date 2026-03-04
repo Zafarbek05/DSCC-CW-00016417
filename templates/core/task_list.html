@@ -1,25 +1,39 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="row mt-4">
-    <div class="col-md-8 offset-md-2">
+<div class="row mt-4 mb-5">
+    <div class="col-md-10 offset-md-1">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-dark mb-0">Your Tasks</h2>
-            <a href="{% url 'task_create' %}" class="btn btn-primary shadow-sm fw-bold">
+            <a href="{% url 'task_create' %}" class="btn btn-primary shadow-sm fw-bold px-4">
                 + New Task
             </a>
         </div>
 
         {% if tasks %}
-        <ul class="list-group shadow-sm rounded">
+        <ul class="list-group shadow-sm rounded border-0">
             {% for task in tasks %}
-            <li class="list-group-item d-flex justify-content-between align-items-center p-3 border-0 border-bottom">
-                <div>
-                    <span class="fw-bold fs-5 text-dark">{{ task.title }}</span>
-                    <span class="badge bg-info text-dark ms-3">{{ task.category.name }}</span>
-                </div>
-                <div>
-                    <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-outline-secondary fw-bold px-3 me-2">Edit</a>
-                    <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-danger fw-bold px-3">Delete</a>
+            <li class="list-group-item p-4 border-bottom">
+                <div class="d-flex justify-content-between align-items-start">
+                    
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">{{ task.title }}</h5>
+                        {% if task.description %}
+                            <p class="text-muted small mb-2">{{ task.description|truncatewords:15 }}</p>
+                        {% endif %}
+                        
+                        <div class="d-flex gap-2 align-items-center flex-wrap mt-2">
+                            <span class="badge bg-primary rounded-pill px-3">{{ task.category.name }}</span>
+                            
+                            {% for tag in task.tags.all %}
+                                <span class="badge bg-secondary border border-secondary text-white rounded-pill"><small>#{{ tag.name }}</small></span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="ms-3 text-end" style="min-width: 140px;">
+                        <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-light border fw-bold text-muted me-1 shadow-sm">Edit</a>
+                        <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-danger fw-bold shadow-sm">Delete</a>
+                    </div>
                 </div>
             </li>
             {% endfor %}

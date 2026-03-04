@@ -12,17 +12,31 @@
                 <form method="post">
                     {% csrf_token %}
                     
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label for="title" class="form-label fw-bold">Task Title</label>
-                        <input type="text" name="title" id="title" class="form-control form-control-lg" placeholder="e.g., Integrate NLP and Vector Embeddings" required>
+                        <input type="text" name="title" id="title" class="form-control" placeholder="e.g., Deploy to Azure" required>
                     </div>
                     
-                    <div class="mb-5">
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-bold">Description (Optional)</label>
+                        <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
                         <label for="category" class="form-label fw-bold">Category</label>
-                        <select name="category" id="category" class="form-select form-select-lg" required>
+                        <select name="category" id="category" class="form-select" required>
                             <option value="" disabled selected>Select a category...</option>
                             {% for cat in categories %}
                                 <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="tags" class="form-label fw-bold">Tags <span class="text-muted fw-normal">(Hold Ctrl/Cmd to select multiple)</span></label>
+                        <select name="tags" id="tags" class="form-select" multiple style="height: 100px;">
+                            {% for tag in tags %}
+                                <option value="{{ tag.id }}">{{ tag.name }}</option>
                             {% endfor %}
                         </select>
                     </div>

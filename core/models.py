@@ -15,7 +15,7 @@ class Tag(models.Model):
 class Task(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE) # Many-to-One [cite: 22]
-    tags = models.ManyToManyField(Tag) # Many-to-Many [cite: 23]
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    tags = models.ManyToManyField(Tag)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
