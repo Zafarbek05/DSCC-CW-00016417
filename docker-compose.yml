@@ -46,6 +46,7 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - static_volume:/home/myuser/web/staticfiles
+      - ./certbot/conf:/etc/letsencrypt
     depends_on:
       - web
     networks:
