@@ -17,7 +17,10 @@
                     <span class="fw-bold fs-5 text-dark">{{ task.title }}</span>
                     <span class="badge bg-info text-dark ms-3">{{ task.category.name }}</span>
                 </div>
-                <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-danger fw-bold px-3">Delete</a>
+                <div>
+                    <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-outline-secondary fw-bold px-3 me-2">Edit</a>
+                    <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-danger fw-bold px-3">Delete</a>
+                </div>
             </li>
             {% endfor %}
         </ul>

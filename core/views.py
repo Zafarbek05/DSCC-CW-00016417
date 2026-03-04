@@ -42,3 +42,18 @@ def task_delete(request, pk):
     task = Task.objects.get(pk=pk, owner=request.user)
     task.delete()
     return redirect('task_list')
+
+# 6. Update Task (Private - CRUD)
+@login_required
+def task_update(request, pk):
+    task = Task.objects.get(pk=pk, owner=request.user)
+    
+    if request.method == 'POST':
+        task.title = request.POST.get('title')
+        category_id = request.POST.get('category')
+        task.category = Category.objects.get(id=category_id)
+        task.save()
+        return redirect('task_list')
+        
+    categories = Category.objects.all()
+    return render(request, 'core/task_update.html', {'task': task, 'categories': categories})
