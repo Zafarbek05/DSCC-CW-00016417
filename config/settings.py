@@ -7,8 +7,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-production')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-# Using '*' to bypass Host Header validation issues during final deployment
-ALLOWED_HOSTS = ['*']
+# Allow localhost and the specific domain/IP for production
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS', 
+    default='localhost,127.0.0.1,django16417.duckdns.org,20.219.27.149', 
+    cast=Csv()
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',

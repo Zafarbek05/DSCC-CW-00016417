@@ -65,7 +65,7 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          # 1. Navigate to the project folder (Update 'dscc_project' if your folder name is different)
+          # 1. Navigate to the project folder
           cd ~/DSCC-CW-00016417 || cd ~/dscc_project || cd ~/
           
           # 2. Force pull the latest code
@@ -81,7 +81,7 @@ jobs:
           # 5. If Nginx is failing because of missing certs, run certbot first
           sudo docker compose run --rm --entrypoint "/bin/sh -c 'apk add --no-cache certbot certbot-nginx && certbot certonly --standalone -d django16417.duckdns.org --non-interactive --agree-tos -m zafarbek@example.com'" nginx || true
           
-          # 6. Fix permissions for static files (Critical for Django)
+          # 6. Fix permissions for static files
           sudo docker compose exec -T -u root web chown -R myuser:myuser /app/staticfiles || true
           
           # 7. Run Migrations and Collectstatic
