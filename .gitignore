@@ -74,3 +74,7 @@ docker-compose.override.yml
 *.pid
 gunicorn.ctl
 
+# Postgres
+*.sql
+postgres_data/
+postgres
